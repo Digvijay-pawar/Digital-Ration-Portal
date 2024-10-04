@@ -16,6 +16,12 @@ const adminSchema = new mongoose.Schema({
       ref: "TahsilOffice",
     },
   ],
+  stock: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Stock",
+    },
+  ],
 });
 
 const Admin = mongoose.model("Admin", adminSchema);

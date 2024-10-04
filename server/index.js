@@ -1,11 +1,10 @@
-import express from "express";
+import express from "express"
 import dotenv from "dotenv";
-
 dotenv.config();
 
-const db = require("./utils/db");
+import { connectToDB } from "./utils/db.js";
 
-const adminRoutes = require("./routes/admin");
+import adminRoutes from "./routes/admin.js";
 
 const app = express();
 
@@ -15,5 +14,6 @@ app.use("/admin", adminRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
+  connectToDB(process.env.MONGO_URL);
   console.log("localhost running on " + PORT);
 });

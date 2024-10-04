@@ -1,5 +1,5 @@
-import Admin  from "../models/admin";
-const { hashPassword, comparePassword, createJWT } = require("../utils/auth");
+import Admin from "../models/admin.js";
+import { hashPassword, comparePassword, createJWT } from "../utils/auth.js";
 
 const JWT_SECRET = process.env.ADMIN_JWT_SECRET;
 
