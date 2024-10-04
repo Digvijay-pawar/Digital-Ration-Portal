@@ -1,4 +1,4 @@
-import Admin  from "../models/admin.js";
+import Admin from "../models/admin.js";
 import { hashPassword, comparePassword, createJWT } from "../utils/auth.js";
 
 const JWT_SECRET = process.env.ADMIN_JWT_SECRET;
@@ -54,3 +54,5 @@ export async function loginAdmin(req, res) {
 export async function adminDashboard(req, res) {
   res.json({ message: "Hi from dashboard", user: req.user });
 }
+
+export async function addTehsil(params) {}
