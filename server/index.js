@@ -4,7 +4,6 @@ import cors from "cors"
 
 dotenv.config();
 
-
 //routes
 import adminRoutes from "./routes/admin.js";
 import tehsilRoutes from "./routes/tehsil.js";

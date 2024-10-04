@@ -36,4 +36,3 @@ export const generatefpsId = async () => {
 
   return `${regionCode}${currentYear}${newNumber}`;
 };
-
