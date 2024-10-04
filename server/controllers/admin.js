@@ -1,8 +1,11 @@
-import Admin  from "../models/admin.js";
+import Admin from "../models/admin.js";
+import Tehsil from "../models/tehsil.js";
 import { hashPassword, comparePassword, createJWT } from "../utils/auth.js";
+import Address from "../models/address.js";
+import { generateTehsilId } from "../utils/uniqueIds.js";
 
-const JWT_SECRET = process.env.ADMIN_JWT_SECRET;
 
+// Register Admin
 export async function registerAdmin(req, res) {
   const { username, password } = req.body;
 
@@ -42,7 +45,7 @@ export async function loginAdmin(req, res) {
 
     const token = await createJWT(
       { admin: { username: admin.username } },
-      JWT_SECRET
+      process.env.ADMIN_JWT_SECRET
     );
 
     res.json({ token });
@@ -53,4 +56,55 @@ export async function loginAdmin(req, res) {
 
 export async function adminDashboard(req, res) {
   res.json({ message: "Hi from dashboard", user: req.user });
+}
+
+// Add Tehsil
+export async function addTehsil(req, res) {
+  try {
+    const { password, street, taluka, district, state, pincode } = req.body;
+
+    // Generate a new tehsil ID
+    const tehsilId = await generateTehsilId();
+
+    // Check if the generated tehsil ID already exists
+    let existingTehsil = await Tehsil.findOne({ tehsilId });
+    if (existingTehsil) {
+      return res
+        .status(409)
+        .json({ message: "Tehsil ID already exists", success: false });
+    }
+
+    // Hash the password
+    const hashedPassword = await hashPassword(password);
+
+    // Create and save the address first
+    const address = new Address({
+      street,
+      taluka,
+      district,
+      state,
+      pincode,
+    });
+    const savedAddress = await address.save(); // Save the address to the database
+
+    // Create a new Tehsil instance with the saved address's ObjectId
+    const tehsil = new Tehsil({
+      tehsilId,
+      password: hashedPassword,
+      address: savedAddress._id, // Use the ObjectId of the saved address
+    });
+
+    // Save the new tehsil to the database
+    await tehsil.save();
+
+    // Respond with a success message
+    res.status(201).json({
+      message: "Tehsil registered successfully",
+      success: true,
+      tehsil,
+    });
+  } catch (error) {
+    console.error("Error adding tehsil:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
 }
