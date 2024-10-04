@@ -1,11 +1,19 @@
 import express from "express";
 import dotenv from "dotenv";
+import mongoose from "mongoose";
 
 dotenv.config();
 
-const db = require("./utils/db");
+//db connection
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("db connected...")
+  })
+  .catch((error) => {
+    console.log("error in db connection " + error)
+  })
 
-const adminRoutes = require("./routes/admin");
+import adminRoutes from "./routes/admin.js"
 
 const app = express();
 
