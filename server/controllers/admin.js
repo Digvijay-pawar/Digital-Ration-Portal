@@ -108,3 +108,29 @@ export async function addTehsil(req, res) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 }
+
+
+export const removeTehsil = async (req, res) => {
+  try {
+    const { tehsilId } = req.params; // Get tehsilId from request parameters
+
+    // Find and delete the Tehsil by its ID
+    const deletedTehsil = await Tehsil.findOneAndDelete({ tehsilId });
+
+    if (!deletedTehsil) {
+      return res
+        .status(404)
+        .json({ message: "Tehsil not found", success: false });
+    }
+
+    // Respond with a success message
+    res.status(200).json({
+      message: "Tehsil removed successfully",
+      success: true,
+      tehsil: deletedTehsil,
+    });
+  } catch (error) {
+    console.error("Error removing tehsil:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

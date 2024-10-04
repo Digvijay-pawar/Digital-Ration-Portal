@@ -5,6 +5,7 @@ import {
   registerAdmin,
   adminDashboard,
   addTehsil,
+  removeTehsil,
 } from "../controllers/admin.js";
 
 import authMiddleware from "../middleware/admin.auth.js";
@@ -16,6 +17,11 @@ router.post("/register", registerAdmin);
 
 router.get("/dashboard", authMiddleware, adminDashboard);
 
+
+// tehsil add
 router.post("/add-tehsil", addTehsil);
+// tehsil remove
+router.delete("/tehsils/:tehsilId", removeTehsil);
+
 
 export default router;
