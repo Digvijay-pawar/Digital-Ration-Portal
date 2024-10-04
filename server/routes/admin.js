@@ -1,15 +1,18 @@
-const express = require("express")
+import express from "express";
 
-const {loginAdmin, registerAdmin, adminDashboard} = require("../controllers/admin.js")
-const authMiddleware = require("../middleware/admin.auth.js")
+import {
+  loginAdmin,
+  registerAdmin,
+  adminDashboard,
+} from "../controllers/admin.js";
 
-const router = express.Router()
+import { authMiddleware } from "../middleware/admin.auth.js";
 
-router.post("/login", loginAdmin)
-router.post("/register", registerAdmin)
+const router = express.Router();
 
-//make it protected
-router.get("/dashboard",authMiddleware, adminDashboard)
+router.post("/login", loginAdmin);
+router.post("/register", registerAdmin);
 
+router.get("/dashboard", authMiddleware, adminDashboard);
 
-module.exports = router
+export default router;

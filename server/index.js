@@ -1,21 +1,19 @@
-const express = require("express")
-const dotenv = require("dotenv")
-dotenv.config()
+import express from "express";
+import dotenv from "dotenv";
 
-const db = require('./utils/db')
+dotenv.config();
 
-//routes
-const adminRoutes = require("./routes/admin")
+const db = require("./utils/db");
 
+const adminRoutes = require("./routes/admin");
 
-const app = express()
+const app = express();
 
-app.use(express.json())
+app.use(express.json());
 
-//admin
-app.use("/admin", adminRoutes)
+app.use("/admin", adminRoutes);
 
-const PORT = process.env.PORT
-app.listen(PORT, () =>{
-    console.log("localhost running on " + PORT)
-})
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log("localhost running on " + PORT);
+});
