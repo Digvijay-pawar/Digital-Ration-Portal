@@ -1,4 +1,5 @@
 import { Schema, model, mongoose } from "mongoose";
+import Address from './address.js';  // Import the Address model
 
 const fpsSchema = new Schema(
     {
@@ -6,6 +7,7 @@ const fpsSchema = new Schema(
         password: { type: String, required: true },
         fullName: { type: String, required: true },
         mobileNumber: { type: String, required: true, unique: true },
+        email: {type: String, required: true, unique: true},
         tehsilId: {
             type: String,
             ref: "Tehsil",
@@ -37,6 +39,6 @@ const fpsSchema = new Schema(
     { timestamps: true }
 );
 
-const Fps = model("fps", fpsSchema);
+const fps = model("fps", fpsSchema);
 
-export default Fps;
+export default fps;
