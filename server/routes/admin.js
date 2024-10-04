@@ -6,7 +6,7 @@ import {
   adminDashboard,
 } from "../controllers/admin.js";
 
-import { authMiddleware } from "../middleware/admin.auth.js";
+import authMiddleware from "../middleware/admin.auth.js";
 
 const router = express.Router();
 
