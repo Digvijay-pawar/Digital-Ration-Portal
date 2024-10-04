@@ -3,13 +3,14 @@ import Tehsil from "../models/tehsil.js";
 import { hashPassword, comparePassword, createJWT } from "../utils/auth.js";
 import Address from "../models/address.js";
 import { generateTehsilId } from "../utils/uniqueIds.js";
+import Stock from "../models/stock.js";
 
 // Register Admin
 export async function registerAdmin(req, res) {
   const { username, password } = req.body;
 
   try {
-    const existingAdmin = await Admin.findOne({ id });
+    const existingAdmin = await Admin.findOne({ username });
     if (existingAdmin) {
       return res.status(400).json({ message: "Admin already exists" });
     }
@@ -110,7 +111,7 @@ export async function addTehsil(req, res) {
 // Remove Tehsil
 export async function removeTehsil(req, res) {
   try {
-    const { tehsilId } = req.params; // Get tehsilId from request parameters
+    const { tehsilId } = req.params;
 
     // Find and delete the Tehsil by its ID
     const deletedTehsil = await Tehsil.findOneAndDelete({ tehsilId });
@@ -132,7 +133,7 @@ export async function removeTehsil(req, res) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 }
-
+// view All tehsils
 export async function getAllTehsils(req, res) {
   try {
     const allTehsils = await Tehsil.find({}).populate("address");
@@ -147,11 +148,11 @@ export async function getAllTehsils(req, res) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 }
-
+// view one tehsil
 export async function getTehsil(req, res) {
   try {
     const { tehsilId } = req.params;
-    
+
     const tehsil = await Tehsil.findOne({ tehsilId }).populate("address");
 
     if (!tehsil) {
@@ -160,6 +161,108 @@ export async function getTehsil(req, res) {
     return res.json(tehsil);
   } catch (error) {
     console.error("Error fetching tehsil:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+}
+
+// add stock
+export async function addStock(req, res) {
+  try {
+    const { adminId, month } = req.params;
+    const {
+      wheat = 0,
+      rice = 0,
+      bajra = 0,
+      sugar = 0,
+      corn = 0,
+      oil = 0,
+    } = req.body;
+
+    const formattedMonth =
+      month.charAt(0).toUpperCase() + month.slice(1).toLowerCase();
+
+    const stockValues = {
+      wheat: parseFloat(wheat) || 0,
+      rice: parseFloat(rice) || 0,
+      bajra: parseFloat(bajra) || 0,
+      sugar: parseFloat(sugar) || 0,
+      corn: parseFloat(corn) || 0,
+      oil: parseFloat(oil) || 0,
+    };
+
+    // Validate the month
+    const validMonths = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    if (!validMonths.includes(formattedMonth)) {
+      return res.status(400).json({ message: "Invalid month" });
+    }
+
+    let stockEntry = await Stock.findOne({ month: formattedMonth }); // Corrected from formattedMonth
+
+    if (stockEntry) {
+      Object.keys(stockValues).forEach((key) => {
+        stockEntry[key] += stockValues[key];
+      });
+
+      await stockEntry.save();
+    } else {
+      // Create a new stock entry
+      stockEntry = new Stock({
+        month: formattedMonth, // Corrected to use formattedMonth
+        ...stockValues,
+      });
+
+      await stockEntry.save();
+    }
+
+    const admin = await Admin.findById(adminId);
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    if (!admin.stock.includes(stockEntry._id)) {
+      admin.stock.push(stockEntry._id);
+      await admin.save();
+    }
+
+    return res.status(200).json({
+      message: stockEntry
+        ? "Stock updated successfully"
+        : "Stock added successfully",
+      stockEntry,
+      admin,
+    });
+  } catch (error) {
+    console.error("Error adding stock:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+}
+
+// view stock
+export async function getAllStock(req, res) {
+  try {
+    const stocks = await Stock.find({});
+
+    if (stocks.length === 0) {
+      return res.status(404).json({ message: "No stock entries found" });
+    }
+
+    return res.status(200).json(stocks);
+  } catch (error) {
+    console.error("Error fetching stock:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 }

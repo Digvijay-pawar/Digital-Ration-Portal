@@ -10,16 +10,22 @@ const adminSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  tahsilOffices: [
+  tehsilOffices: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "TahsilOffice",
+      ref: "Tehsil",
     },
   ],
   stock: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Stock",
+    },
+  ],
+  transcation: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Transaction",
     },
   ],
 });

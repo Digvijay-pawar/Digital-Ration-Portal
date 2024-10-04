@@ -1,6 +1,5 @@
 import { Schema, model} from "mongoose";
 import mongoose from "mongoose";
-import Address from "./address.js";
 
 const tehsilSchema = new Schema(
   {

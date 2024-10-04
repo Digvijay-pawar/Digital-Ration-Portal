@@ -8,6 +8,8 @@ import {
   removeTehsil,
   getAllTehsils,
   getTehsil,
+  addStock,
+  getAllStock,
 } from "../controllers/admin.js";
 
 import authMiddleware from "../middleware/admin.auth.js";
@@ -28,4 +30,8 @@ router.get("/tehsils", getAllTehsils);
 // view tehsil
 router.get("/tehsil/:tehsilId", getTehsil);
 
+// add stock
+router.post("/addstock/:adminId/:month", addStock);
+
+router.get("/allstock", getAllStock);
 export default router;
