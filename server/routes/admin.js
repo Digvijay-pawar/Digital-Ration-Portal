@@ -15,4 +15,5 @@ router.post("/register", registerAdmin);
 
 router.get("/dashboard", authMiddleware, adminDashboard);
 
+
 export default router;
