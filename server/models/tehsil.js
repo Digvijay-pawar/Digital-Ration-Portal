@@ -1,4 +1,6 @@
-import { Schema, model, mongoose } from "mongoose";
+import { Schema, model} from "mongoose";
+import mongoose from "mongoose";
+import Address from "./address.js";
 
 const tehsilSchema = new Schema(
   {
@@ -7,12 +9,12 @@ const tehsilSchema = new Schema(
     address: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Address",
-      required: true, 
+      required: true,
     },
     fps_shops: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "FPSShop",
+        ref: "fps",
       },
     ],
     officers: [
@@ -34,6 +36,6 @@ const tehsilSchema = new Schema(
   { timestamps: true }
 );
 
-const Tehsil = model("Tehsil", tehsilSchema); 
+const Tehsil = model("Tehsil", tehsilSchema);
 
 export default Tehsil;

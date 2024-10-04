@@ -33,4 +33,4 @@ const stockSchema = new mongoose.Schema({
 
 const Stock = model("Stock", stockSchema);
 
-module.exports = Stock;
+export default Stock;

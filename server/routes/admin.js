@@ -6,6 +6,8 @@ import {
   adminDashboard,
   addTehsil,
   removeTehsil,
+  getAllTehsils,
+  getTehsil,
 } from "../controllers/admin.js";
 
 import authMiddleware from "../middleware/admin.auth.js";
@@ -17,11 +19,13 @@ router.post("/register", registerAdmin);
 
 router.get("/dashboard", authMiddleware, adminDashboard);
 
-
 // tehsil add
-router.post("/add-tehsil", addTehsil);
+router.post("/addtehsil", addTehsil);
 // tehsil remove
 router.delete("/tehsils/:tehsilId", removeTehsil);
-
+// view tehsils
+router.get("/tehsils", getAllTehsils);
+// view tehsil
+router.get("/tehsil/:tehsilId", getTehsil);
 
 export default router;

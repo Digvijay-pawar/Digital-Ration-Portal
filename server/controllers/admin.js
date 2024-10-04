@@ -4,7 +4,6 @@ import { hashPassword, comparePassword, createJWT } from "../utils/auth.js";
 import Address from "../models/address.js";
 import { generateTehsilId } from "../utils/uniqueIds.js";
 
-
 // Register Admin
 export async function registerAdmin(req, res) {
   const { username, password } = req.body;
@@ -108,9 +107,8 @@ export async function addTehsil(req, res) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 }
-
-
-export const removeTehsil = async (req, res) => {
+// Remove Tehsil
+export async function removeTehsil(req, res) {
   try {
     const { tehsilId } = req.params; // Get tehsilId from request parameters
 
@@ -133,4 +131,35 @@ export const removeTehsil = async (req, res) => {
     console.error("Error removing tehsil:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
-};
+}
+
+export async function getAllTehsils(req, res) {
+  try {
+    const allTehsils = await Tehsil.find({}).populate("address");
+
+    if (!allTehsils.length) {
+      return res.status(404).json({ message: "No tehsils found." });
+    }
+
+    return res.json(allTehsils);
+  } catch (error) {
+    console.error("Error fetching tehsils:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+}
+
+export async function getTehsil(req, res) {
+  try {
+    const { tehsilId } = req.params;
+    
+    const tehsil = await Tehsil.findOne({ tehsilId }).populate("address");
+
+    if (!tehsil) {
+      return res.status(404).json({ message: "Tehsil not found." });
+    }
+    return res.json(tehsil);
+  } catch (error) {
+    console.error("Error fetching tehsil:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+}

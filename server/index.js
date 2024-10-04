@@ -6,18 +6,19 @@ dotenv.config();
 //db connection
 import { connectToDB } from "./utils/db.js";
 
+
+import Address from "./models/address.js";
+
 //routes
 import adminRoutes from "./routes/admin.js";
-import tahsilRoutes from "./routes/tehsil.js";
+import tehsilRoutes from "./routes/tehsil.js";
 
-import adminRoutes from "./routes/admin.js";
-import { connectToDB } from "./utils/db.js";
 const app = express();
 
 app.use(express.json());
 
-app.use("/admin", adminRoutes);
-app.use("/tahsil", tahsilRoutes);
+app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/tehsil", tehsilRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

@@ -37,6 +37,6 @@ const fpsSchema = new Schema(
     { timestamps: true }
 );
 
-const fps = model("fps", fpsSchema);
+const Fps = model("fps", fpsSchema);
 
-export default fps;
+export default Fps;
