@@ -3,13 +3,21 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+//db connection
+import { connectToDB } from "./utils/db.js";
+
+//routes
+import adminRoutes from "./routes/admin.js";
+import tahsilRoutes from "./routes/tehsil.js";
+
 import adminRoutes from "./routes/admin.js";
 import { connectToDB } from "./utils/db.js";
 const app = express();
 
 app.use(express.json());
 
-app.use("/api/v1/admin", adminRoutes);
+app.use("/admin", adminRoutes);
+app.use("/tahsil", tahsilRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
