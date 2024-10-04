@@ -4,6 +4,7 @@ import {
   loginAdmin,
   registerAdmin,
   adminDashboard,
+  addTehsil,
 } from "../controllers/admin.js";
 
 import authMiddleware from "../middleware/admin.auth.js";
@@ -14,5 +15,7 @@ router.post("/login", loginAdmin);
 router.post("/register", registerAdmin);
 
 router.get("/dashboard", authMiddleware, adminDashboard);
+
+router.post("/add-tehsil", addTehsil);
 
 export default router;
