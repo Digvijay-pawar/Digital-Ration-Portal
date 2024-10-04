@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors"
 
 dotenv.config();
 
@@ -12,6 +13,7 @@ import { connectToDB } from "./utils/db.js";
 const app = express();
 
 app.use(express.json());
+app.use(cors())
 
 app.use("/admin", adminRoutes);
 app.use("/tehsil", tehsilRoutes);

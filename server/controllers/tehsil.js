@@ -4,35 +4,7 @@ import { createJWT, comparePassword, hashPassword } from '../utils/auth.js';
 import Address from "../models/address.js"; // Import the Address model
 import { generatefpsId } from '../utils/uniqueIds.js';
 
-export async function changeTehsilPassword(req, res) {
-    const { tehsilId, oldPassword, newPassword } = req.body;
 
-    try {
-        // Find the tehsil by its ID
-        const tehsil = await Tehsil.findOne({ tehsilId });
-        if (!tehsil) {
-            return res.status(404).json({ message: "tehsil not found" });
-        }
-
-        // Compare the old password with the stored password
-        const isMatch = await comparePassword(oldPassword, tehsil.password);
-        if (!isMatch) {
-            return res.status(400).json({ message: "Incorrect old password" });
-        }
-
-        // Hash the new password
-        const hashedNewPassword = await hashPassword(newPassword);
-
-        // Update the password in the database
-        tehsil.password = hashedNewPassword;
-        await tehsil.save();
-
-        res.status(200).json({ message: "Password changed successfully" });
-    } catch (error) {
-        console.error("Error changing password:", error);
-        res.status(500).json({ message: "Server error", error });
-    }
-}
 
 export async function loginTehsil(req, res) {
     const { tehsilId, password } = req.body;
@@ -139,7 +111,7 @@ export async function getFpsById(req, res) {
     const { fpsId } = req.params;
     try {
         // Find the FPS by its ID and populate the address reference
-        const fpsUser = await fps.findOne({ fpsId });
+        const fpsUser = await fps.findOne({ fpsId }).populate("address");
 
         if (!fpsUser) {
             return res.status(404).json({ message: "FPS not found" });
@@ -156,7 +128,7 @@ export async function getFpsById(req, res) {
 export async function getAllFps(req, res) {
     try {
         // Find all FPS entries and populate the address reference
-        const allFps = await fps.find()
+        const allFps = await fps.find().populate("address")
 
         if (!allFps.length) {
             return res.status(404).json({ message: "No FPS entries found" });

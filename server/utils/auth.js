@@ -20,7 +20,7 @@ export function createJWT(payload, JWT_SECRET) {
         jwt.sign(
             payload,
             JWT_SECRET,
-            { expiresIn: '1h' }, // Token expiration time
+            { expiresIn: '1d' }, // Token expiration time
             (err, token) => {
                 if (err) {
                     reject(err);
