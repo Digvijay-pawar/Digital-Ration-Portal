@@ -266,3 +266,48 @@ export async function getAllStock(req, res) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 }
+
+
+export async function allocateStockFromAdmin(req, res) {
+  try {
+    const { adminId, tehsilId, stockId } = req.params;
+
+    // Find the admin by ID
+    const admin = await Admin.findById(adminId).populate("stock");
+
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    // Check if the stock exists in the admin's stock list
+    const stockExistsInAdmin = admin.stock.some(
+      (stockItem) => stockItem._id.toString() === stockId
+    );
+
+    if (!stockExistsInAdmin) {
+      return res
+        .status(400)
+        .json({ message: "Stock not available in admin's stock" });
+    }
+
+    // Find the tehsil
+    const tehsil = await Tehsil.findById(tehsilId);
+    if (!tehsil) {
+      return res.status(404).json({ message: "Tehsil not found" });
+    }
+
+    // Check if the stock is already allocated
+    if (!tehsil.allocatedStock.includes(stockId)) {
+      tehsil.allocatedStock.push(stockId); // Allocate the stock to the tehsil
+      await tehsil.save(); // Save the updated tehsil
+    }
+
+    return res.status(200).json({
+      message: "Stock successfully allocated to tehsil",
+      tehsil,
+    });
+  } catch (error) {
+    console.error("Error allocating stock:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+}

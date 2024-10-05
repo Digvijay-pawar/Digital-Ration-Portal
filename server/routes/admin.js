@@ -9,6 +9,7 @@ import {
   getAllTehsils,
   getTehsil,
   addStock,
+  allocateStockFromAdmin,
   getAllStock,
 } from "../controllers/admin.js";
 
@@ -16,7 +17,10 @@ import authMiddleware from "../middleware/admin.auth.js";
 
 const router = express.Router();
 
+// login admin
 router.post("/login", loginAdmin);
+
+// register admin
 router.post("/register", registerAdmin);
 
 router.get("/dashboard", authMiddleware, adminDashboard);
@@ -34,4 +38,10 @@ router.get("/tehsil/:tehsilId", getTehsil);
 router.post("/addstock/:adminId/:month", addStock);
 
 router.get("/allstock", getAllStock);
+
+router.post(
+  "/allocate-stock/:adminId/:tehsilId/:stockId",
+  allocateStockFromAdmin
+);
+
 export default router;
