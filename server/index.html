@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ration Card Application Form</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to right, #f7f8f9, #e2e2e2);
+        margin: 0;
+        padding: 20px;
+      }
+      h2 {
+        text-align: center;
+        color: #4a4a4a;
+      }
+      .form-container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        margin: auto;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+      }
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      .add-member-btn,
+      .remove-member-btn,
+      .submit-btn {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      .remove-member-btn {
+        background-color: #f44336; /* Red */
+      }
+      .add-member-btn:hover,
+      .remove-member-btn:hover,
+      .submit-btn:hover {
+        opacity: 0.9;
+      }
+      .notes {
+        background-color: #fff3cd;
+        padding: 10px;
+        border-left: 4px solid #ffeeba;
+        color: #856404;
+        margin-bottom: 15px;
+      }
+      hr {
+        margin: 20px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-container">
+      <h2>New Ration Card Application Form</h2>
+
+      <div class="notes">
+        <p><strong>Note 1:</strong> Applicant must be a family member.</p>
+        <p>
+          <strong>Note 2:</strong> If a member is already present in another
+          ration card, they must be removed from the previous one.
+        </p>
+      </div>
+
+      <form id="rationCardForm">
+        <div class="form-group">
+          <label for="applicantName">Name of Applicant</label>
+          <input type="text" id="applicantName" name="applicantName" required />
+        </div>
+
+        <div class="form-group">
+          <label for="gender">Gender</label>
+          <select id="gender" name="gender" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+
+        <div class="form-group">
+          <label for="category">Category</label>
+          <select id="category" name="category" required>
+            <option value="SC">SC</option>
+            <option value="ST">ST</option>
+            <option value="OBC">OBC</option>
+            <option value="General">General</option>
+            <option value="VJ/NT">VJ/NT</option>
+          </select>
+        </div>
+
+        <div id="familyMembers"></div>
+
+        <button
+          type="button"
+          class="add-member-btn"
+          onclick="addFamilyMember()"
+        >
+          Add Family Member
+        </button>
+        <button type="button" class="submit-btn" onclick="submitApplication()">
+          Submit Application
+        </button>
+      </form>
+    </div>
+    <script>
+      let familyMemberCount = 0;
+
+      function addFamilyMember() {
+        familyMemberCount++;
+
+        const familyMemberHTML = `
+      <div class="form-group" id="familyMember${familyMemberCount}">
+          <h3>Family Member ${familyMemberCount}</h3>
+          <div class="form-group">
+              <label for="fullName${familyMemberCount}">Name</label>
+              <input type="text" id="fullName${familyMemberCount}" name="fullName" required onblur="autoAddMember(${familyMemberCount})">
+          </div>
+          <div class="form-group">
+              <label for="email${familyMemberCount}">Email</label>
+              <input type="email" id="email${familyMemberCount}" name="email" required>
+          </div>
+          <div class="form-group">
+              <label for="relationship${familyMemberCount}">Relationship</label>
+              <input type="text" id="relationship${familyMemberCount}" name="relationship" required>
+          </div>
+          <div class="form-group">
+              <label for="dob${familyMemberCount}">Date of Birth</label>
+              <input type="date" id="dob${familyMemberCount}" name="dob" required>
+          </div>
+          <div class="form-group">
+              <label for="mobileNumber${familyMemberCount}">Mobile Number</label>
+              <input type="tel" id="mobileNumber${familyMemberCount}" name="mobileNumber" required>
+          </div>
+          <div class="form-group">
+              <label for="income${familyMemberCount}">Income</label>
+              <input type="number" id="income${familyMemberCount}" name="income" required>
+          </div>
+          <div class="form-group">
+              <label for="aadhaarNumber${familyMemberCount}">Aadhaar Number</label>
+              <input type="text" id="aadhaarNumber${familyMemberCount}" name="aadhaarNumber" required>
+          </div>
+          <div class="form-group">
+              <label for="aadhaarCard${familyMemberCount}">Aadhaar Card</label>
+              <input type="file" id="aadhaarCard${familyMemberCount}" name="aadhaarCard" required>
+          </div>
+          <div class="form-group">
+              <label for="street${familyMemberCount}">Street</label>
+              <input type="text" id="street${familyMemberCount}" name="street" required>
+          </div>
+          <div class="form-group">
+              <label for="taluka${familyMemberCount}">Taluka</label>
+              <input type="text" id="taluka${familyMemberCount}" name="taluka" required>
+          </div>
+          <div class="form-group">
+              <label for="district${familyMemberCount}">District</label>
+              <input type="text" id="district${familyMemberCount}" name="district" required>
+          </div>
+          <div class="form-group">
+              <label for="state${familyMemberCount}">State</label>
+              <input type="text" id="state${familyMemberCount}" name="state" required>
+          </div>
+          <div class="form-group">
+              <label for="pincode${familyMemberCount}">Pincode</label>
+              <input type="text" id="pincode${familyMemberCount}" name="pincode" required>
+          </div>
+
+          <button type="button" class="remove-member-btn" onclick="removeFamilyMember(${familyMemberCount})">Remove Family Member</button>
+          <button type="button" class="add-member-btn" onclick="addMemberToSystem(${familyMemberCount})">Add Member to System</button>
+          <hr>
+      </div>
+    `;
+
+        document
+          .getElementById("familyMembers")
+          .insertAdjacentHTML("beforeend", familyMemberHTML);
+      }
+
+      function removeFamilyMember(index) {
+        const memberElement = document.getElementById(`familyMember${index}`);
+        if (memberElement) {
+          memberElement.remove();
+        }
+      }
+
+      async function addMemberToSystem(index) {
+        const memberData = {
+          fullName: document.getElementById(`fullName${index}`).value,
+          email: document.getElementById(`email${index}`).value, // Added email field
+          relationship: document.getElementById(`relationship${index}`).value,
+          dob: document.getElementById(`dob${index}`).value,
+          mobileNumber: document.getElementById(`mobileNumber${index}`).value,
+          income: document.getElementById(`income${index}`).value,
+          aadhaarNumber: document.getElementById(`aadhaarNumber${index}`).value,
+          street: document.getElementById(`street${index}`).value,
+          taluka: document.getElementById(`taluka${index}`).value,
+          district: document.getElementById(`district${index}`).value,
+          state: document.getElementById(`state${index}`).value,
+          pincode: document.getElementById(`pincode${index}`).value,
+          aadhaarCard: document.getElementById(`aadhaarCard${index}`).files[0],
+        };
+
+        // Validate member data before sending
+        if (validateMemberData(memberData)) {
+          const formData = new FormData();
+          for (const key in memberData) {
+            formData.append(key, memberData[key]);
+          }
+
+          try {
+            const response = await fetch(
+              "http://localhost:4000/user/registerUser",
+              {
+                method: "POST",
+                body: formData,
+              }
+            );
+
+            if (response.ok) {
+              alert("Family member added successfully.");
+              removeFamilyMember(index); // Optionally remove member after adding to the system
+            } else {
+              alert("Failed to add family member. Please try again.");
+            }
+          } catch (error) {
+            console.error("Error adding family member:", error);
+            alert(
+              "An error occurred while adding the family member. Please try again."
+            );
+          }
+        } else {
+          alert("Please fill in all the required fields correctly.");
+        }
+      }
+
+      function validateMemberData(memberData) {
+        return Object.values(memberData).every(
+          (value) => value !== null && value !== ""
+        );
+      }
+    </script>
+  </body>
+</html>

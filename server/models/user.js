@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema(
     },
     relationship: {
       type: String,
-      enum: ["father", "son", "mother", "daughter", "spouse"],
+      enum: ["father", "son", "mother", "daughter", "spouse", "self"],
       required: function () {
         return !this.isHead;
       },

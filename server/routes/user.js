@@ -2,6 +2,8 @@ import express from "express";
 import { addUser } from "../controllers/user.js";
 const router = express.Router();
 
-router.post("/registerUser", addUser);
+import upload from "../middleware/multer.js"; // Import multer config
+
+router.post("/registerUser", upload.single("aadhaarCard"), addUser);
 
 export default router;
