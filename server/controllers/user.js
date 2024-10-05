@@ -20,6 +20,10 @@ export async function addUser(req, res) {
       pincode,
     } = req.body;
 
+
+    // to debug
+    // console.log(req.body);
+
     // Check if the user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -48,7 +52,7 @@ export async function addUser(req, res) {
       : await Address.create({ street, taluka, district, state, pincode });
 
     // Create the user
-    const newUser = await new User.create({
+    const newUser = await User.create({
       email,
       aadhaarNumber,
       mobileNumber,
@@ -63,7 +67,6 @@ export async function addUser(req, res) {
 
     // Save the user to the database
     // await newUser.save();
-    console.log("---------------------------");
 
     return res
       .status(201)

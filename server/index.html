@@ -204,16 +204,17 @@
           memberElement.remove();
         }
       }
-
       async function addMemberToSystem(index) {
+        console.log("Adding member to system, index:", index);
         const memberData = {
-          fullName: document.getElementById(`fullName${index}`).value,
-          email: document.getElementById(`email${index}`).value, // Added email field
-          relationship: document.getElementById(`relationship${index}`).value,
+          name: document.getElementById(`memberName${index}`).value,
+          relation: document.getElementById(`relation${index}`).value,
           dob: document.getElementById(`dob${index}`).value,
-          mobileNumber: document.getElementById(`mobileNumber${index}`).value,
+          mobile: document.getElementById(`mobile${index}`).value,
+          occupation: document.getElementById(`occupation${index}`).value,
           income: document.getElementById(`income${index}`).value,
-          aadhaarNumber: document.getElementById(`aadhaarNumber${index}`).value,
+          aadhaar: document.getElementById(`aadhaar${index}`).value,
+          email: document.getElementById(`email${index}`).value, // Make sure this is included
           street: document.getElementById(`street${index}`).value,
           taluka: document.getElementById(`taluka${index}`).value,
           district: document.getElementById(`district${index}`).value,
@@ -221,6 +222,8 @@
           pincode: document.getElementById(`pincode${index}`).value,
           aadhaarCard: document.getElementById(`aadhaarCard${index}`).files[0],
         };
+
+        console.log("Member Data: ", memberData); // Log the data before sending
 
         // Validate member data before sending
         if (validateMemberData(memberData)) {
@@ -230,6 +233,7 @@
           }
 
           try {
+            console.log("Sending request to server...");
             const response = await fetch(
               "http://localhost:4000/user/registerUser",
               {
@@ -238,11 +242,14 @@
               }
             );
 
+            console.log("Response Status:", response.status); // Log the response status
             if (response.ok) {
               alert("Family member added successfully.");
               removeFamilyMember(index); // Optionally remove member after adding to the system
             } else {
-              alert("Failed to add family member. Please try again.");
+              const errorText = await response.text();
+              console.error("Error response:", errorText);
+              alert("Failed to add family member: " + errorText);
             }
           } catch (error) {
             console.error("Error adding family member:", error);
