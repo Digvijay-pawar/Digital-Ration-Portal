@@ -7,30 +7,37 @@ import { generatefpsId } from '../utils/uniqueIds.js';
 
 
 export async function loginTehsil(req, res) {
-    const { tehsilId, password } = req.body;
+  const { tehsilId, password } = req.body;
 
-    try {
-        const tehsil = await Tehsil.findOne({ tehsilId });
-        if (!tehsil) {
-            return res.status(404).json({ message: "Invalid credentials" });
-        }
-
-        const isMatch = await comparePassword(password, tehsil.password);
-        if (!isMatch) {
-            return res.status(400).json({ message: "Invalid credentials" });
-        }
-
-        const token = await createJWT(
-            { tehsilId: { tehsilId: tehsil.tehsilId } },
-            process.env.JWT_SECRET
-        );
-
-        res.json({ token });
-    } catch (error) {
-        res.status(500).json({ message: "Server error" + error, error });
+  try {
+    const tehsil = await Tehsil.findOne({ tehsilId });
+    if (!tehsil) {
+      return res.status(404).json({ message: "Invalid credentials" });
     }
-}
 
+    const isMatch = await comparePassword(password, tehsil.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    const token = createJWT(
+      { tehsilId: tehsil.tehsilId }, // Payload
+      process.env.JWT_SECRET // Secret from the environment variable
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true, // Prevents access to the cookie via client-side JavaScript
+      secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+      sameSite: "Strict", // Helps prevent CSRF attacks
+      maxAge: 24 * 60 * 60 * 1000, // 1 day expiration
+    });
+
+    return res.status(200).json({ message: "Login successful" });
+  } catch (error) {
+    console.error("Error during login:", error);
+    return res.status(500).json({ message: "Server error", error });
+  }
+}
 export async function addFps(req, res) {
     const { password, mobileNumber, email, fullName, street, taluka, district, state, pincode, tehsilId } = req.body;
 
@@ -85,14 +92,12 @@ export async function removeFps(req, res) {
     const { fpsId } = req.params; // fpsId passed through request parameters
 
     try {
-        // Find the FPS by its ID
         const fpsToRemove = await fps.findOne({ fpsId });
 
         if (!fpsToRemove) {
             return res.status(404).json({ message: "FPS not found" });
         }
 
-        // Remove the corresponding address from the Address table
         await Address.findByIdAndDelete(fpsToRemove.address); // Correct method
 
         // Remove the FPS entry from the FPS table
